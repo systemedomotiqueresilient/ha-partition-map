@@ -1,0 +1,4 @@
+# Outils de développement uniquement : aucune dépendance d'exécution (manifest.json "requirements": [])
+pytest-homeassistant-custom-component
+pytest-cov
+ruff

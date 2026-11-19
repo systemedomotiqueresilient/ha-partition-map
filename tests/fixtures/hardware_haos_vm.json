@@ -1,0 +1,342 @@
+{
+ "result": "ok",
+ "data": {
+  "devices": [
+   {
+    "name": "sdb",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb",
+    "dev_path": "/dev/sdb",
+    "subsystem": "block",
+    "children": [
+     "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb1",
+     "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb2",
+     "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb3",
+     "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb4",
+     "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb5",
+     "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb6",
+     "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb7",
+     "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb8"
+    ],
+    "attributes": {
+     "DEVTYPE": "disk",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi0",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sdb1",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb1",
+    "dev_path": "/dev/sdb1",
+    "subsystem": "block",
+    "children": [],
+    "attributes": {
+     "DEVTYPE": "partition",
+     "ID_FS_LABEL": "hassos-boot",
+     "ID_FS_TYPE": "vfat",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_ENTRY_NAME": "hassos-boot",
+     "ID_PART_ENTRY_NUMBER": "1",
+     "ID_PART_ENTRY_OFFSET": "2048",
+     "ID_PART_ENTRY_SIZE": "65536",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi0",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sdb2",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb2",
+    "dev_path": "/dev/sdb2",
+    "subsystem": "block",
+    "children": [],
+    "attributes": {
+     "DEVTYPE": "partition",
+     "ID_FS_TYPE": "squashfs",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_ENTRY_NAME": "hassos-kernel0",
+     "ID_PART_ENTRY_NUMBER": "2",
+     "ID_PART_ENTRY_OFFSET": "67584",
+     "ID_PART_ENTRY_SIZE": "49152",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi0",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sdb3",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb3",
+    "dev_path": "/dev/sdb3",
+    "subsystem": "block",
+    "children": [],
+    "attributes": {
+     "DEVTYPE": "partition",
+     "ID_FS_TYPE": "erofs",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_ENTRY_NAME": "hassos-system0",
+     "ID_PART_ENTRY_NUMBER": "3",
+     "ID_PART_ENTRY_OFFSET": "116736",
+     "ID_PART_ENTRY_SIZE": "524288",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi0",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sdb4",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb4",
+    "dev_path": "/dev/sdb4",
+    "subsystem": "block",
+    "children": [],
+    "attributes": {
+     "DEVTYPE": "partition",
+     "ID_FS_TYPE": "squashfs",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_ENTRY_NAME": "hassos-kernel1",
+     "ID_PART_ENTRY_NUMBER": "4",
+     "ID_PART_ENTRY_OFFSET": "641024",
+     "ID_PART_ENTRY_SIZE": "49152",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi0",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sdb5",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb5",
+    "dev_path": "/dev/sdb5",
+    "subsystem": "block",
+    "children": [],
+    "attributes": {
+     "DEVTYPE": "partition",
+     "ID_FS_TYPE": "erofs",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_ENTRY_NAME": "hassos-system1",
+     "ID_PART_ENTRY_NUMBER": "5",
+     "ID_PART_ENTRY_OFFSET": "690176",
+     "ID_PART_ENTRY_SIZE": "524288",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi0",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sdb6",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb6",
+    "dev_path": "/dev/sdb6",
+    "subsystem": "block",
+    "children": [],
+    "attributes": {
+     "DEVTYPE": "partition",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_ENTRY_NAME": "hassos-bootstate",
+     "ID_PART_ENTRY_NUMBER": "6",
+     "ID_PART_ENTRY_OFFSET": "1214464",
+     "ID_PART_ENTRY_SIZE": "16384",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi0",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sdb7",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb7",
+    "dev_path": "/dev/sdb7",
+    "subsystem": "block",
+    "children": [],
+    "attributes": {
+     "DEVTYPE": "partition",
+     "ID_FS_LABEL": "hassos-overlay",
+     "ID_FS_TYPE": "ext4",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_ENTRY_NAME": "hassos-overlay",
+     "ID_PART_ENTRY_NUMBER": "7",
+     "ID_PART_ENTRY_OFFSET": "1230848",
+     "ID_PART_ENTRY_SIZE": "196608",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi0",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sdb8",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:01.0/virtio2/host0/target0:0:0/0:0:0:0/block/sdb/sdb8",
+    "dev_path": "/dev/sdb8",
+    "subsystem": "block",
+    "children": [],
+    "attributes": {
+     "DEVTYPE": "partition",
+     "ID_FS_LABEL": "hassos-data-old",
+     "ID_FS_TYPE": "ext4",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_ENTRY_NAME": "hassos-data",
+     "ID_PART_ENTRY_NUMBER": "8",
+     "ID_PART_ENTRY_OFFSET": "1427456",
+     "ID_PART_ENTRY_SIZE": "65681375",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi0",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sda",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:02.0/virtio3/host1/target1:0:0/1:0:0:1/block/sda",
+    "dev_path": "/dev/sda",
+    "subsystem": "block",
+    "children": [
+     "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:02.0/virtio3/host1/target1:0:0/1:0:0:1/block/sda/sda1"
+    ],
+    "attributes": {
+     "DEVTYPE": "disk",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi1",
+     "ID_VENDOR": "QEMU"
+    }
+   },
+   {
+    "name": "sda1",
+    "sysfs": "/sys/devices/pci0000:00/0000:00:1e.0/0000:05:04.0/0000:09:02.0/virtio3/host1/target1:0:0/1:0:0:1/block/sda/sda1",
+    "dev_path": "/dev/sda1",
+    "subsystem": "block",
+    "children": [],
+    "attributes": {
+     "DEVTYPE": "partition",
+     "ID_FS_LABEL": "hassos-data",
+     "ID_FS_TYPE": "ext4",
+     "ID_MODEL": "QEMU_HARDDISK",
+     "ID_PART_ENTRY_NAME": "hassos-data-external",
+     "ID_PART_ENTRY_NUMBER": "1",
+     "ID_PART_ENTRY_OFFSET": "2048",
+     "ID_PART_ENTRY_SIZE": "75495391",
+     "ID_PART_TABLE_TYPE": "gpt",
+     "ID_SERIAL_SHORT": "drive-scsi1",
+     "ID_VENDOR": "QEMU"
+    }
+   }
+  ],
+  "drives": [
+   {
+    "vendor": "QEMU",
+    "model": "QEMU HARDDISK",
+    "revision": "2.5+",
+    "serial": "drive-scsi1",
+    "id": "QEMU-QEMU-HARDDISK-drive-scsi1",
+    "size": 38654705664,
+    "time_detected": "2026-11-19T04:54:27.305095+00:00",
+    "connection_bus": "",
+    "seat": "seat0",
+    "removable": false,
+    "ejectable": false,
+    "filesystems": [
+     {
+      "device": "/dev/sda1",
+      "id": "by-id-scsi-0QEMU_QEMU_HARDDISK_drive-scsi1-part1",
+      "size": 38653640192,
+      "name": "hassos-data",
+      "system": true,
+      "mount_points": [
+       "/mnt/data",
+       "/var/lib/docker",
+       "/var/log/journal"
+      ]
+     }
+    ]
+   },
+   {
+    "vendor": "QEMU",
+    "model": "QEMU HARDDISK",
+    "revision": "2.5+",
+    "serial": "drive-scsi0",
+    "id": "QEMU-QEMU-HARDDISK-drive-scsi0",
+    "size": 36507222016,
+    "time_detected": "2026-11-19T04:54:27.293966+00:00",
+    "connection_bus": "",
+    "seat": "seat0",
+    "removable": false,
+    "ejectable": false,
+    "filesystems": [
+     {
+      "device": "/dev/sdb1",
+      "id": "by-id-scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-part1",
+      "size": 33554432,
+      "name": "hassos-boot",
+      "system": true,
+      "mount_points": [
+       "/mnt/boot"
+      ]
+     },
+     {
+      "device": "/dev/sdb3",
+      "id": "by-id-scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-part3",
+      "size": 268435456,
+      "name": "",
+      "system": true,
+      "mount_points": [
+       "/"
+      ]
+     },
+     {
+      "device": "/dev/sdb8",
+      "id": "by-id-scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-part8",
+      "size": 33628864000,
+      "name": "hassos-data-old",
+      "system": true,
+      "mount_points": []
+     },
+     {
+      "device": "/dev/sdb5",
+      "id": "by-id-scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-part5",
+      "size": 268435456,
+      "name": "",
+      "system": true,
+      "mount_points": []
+     },
+     {
+      "device": "/dev/sdb2",
+      "id": "by-id-scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-part2",
+      "size": 25165824,
+      "name": "",
+      "system": true,
+      "mount_points": []
+     },
+     {
+      "device": "/dev/sdb4",
+      "id": "by-id-scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-part4",
+      "size": 25165824,
+      "name": "",
+      "system": true,
+      "mount_points": []
+     },
+     {
+      "device": "/dev/sdb7",
+      "id": "by-id-scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-part7",
+      "size": 100663296,
+      "name": "hassos-overlay",
+      "system": true,
+      "mount_points": [
+       "/etc/NetworkManager/system-connections",
+       "/etc/default",
+       "/etc/dropbear",
+       "/etc/hostname",
+       "/etc/hosts",
+       "/etc/modprobe.d",
+       "/etc/modules-load.d",
+       "/etc/sysctl.d",
+       "/etc/systemd/timesyncd.conf.d",
+       "/etc/udev/rules.d",
+       "/etc/usb_modeswitch.d",
+       "/mnt/overlay",
+       "/root/.docker",
+       "/root/.ssh",
+       "/var/lib/NetworkManager",
+       "/var/lib/bluetooth",
+       "/var/lib/systemd"
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

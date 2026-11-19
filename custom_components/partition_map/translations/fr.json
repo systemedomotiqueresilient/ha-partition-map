@@ -1,0 +1,64 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Partition Map",
+        "description": "Ajoute à la barre latérale une vue façon GParted de tes disques et partitions (administrateurs uniquement) et surveille l'espace de stockage.",
+        "data": {
+          "admin_notify_target": "Téléphone admin"
+        },
+        "data_description": {
+          "admin_notify_target": "Service de notification pour les alertes de stockage, par exemple notify.mobile_app_pixel_9. Prérempli si une autre de tes intégrations le définit déjà. Laisse vide pour ne recevoir que des notifications persistantes."
+        }
+      }
+    },
+    "error": {
+      "invalid_target": "Saisis un service de notification commençant par notify., par exemple notify.mobile_app_pixel_9."
+    },
+    "abort": {
+      "not_supervised": "Partition Map nécessite Home Assistant OS ou Supervised : les données disque viennent du Supervisor.",
+      "single_instance_allowed": "Partition Map est déjà configuré."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options de Partition Map",
+        "data": {
+          "admin_notify_target": "Téléphone admin",
+          "warning_threshold": "Seuil d'avertissement",
+          "critical_threshold": "Seuil critique",
+          "include_mounts": "Surveiller les stockages réseau"
+        },
+        "data_description": {
+          "admin_notify_target": "Service de notification pour les alertes de stockage. Laisse vide pour ne recevoir que des notifications persistantes.",
+          "warning_threshold": "Pourcentage d'occupation qui déclenche un avertissement.",
+          "critical_threshold": "Pourcentage d'occupation qui déclenche une alerte critique. Doit être supérieur au seuil d'avertissement.",
+          "include_mounts": "Surveille aussi les partages de sauvegarde et de médias ajoutés dans Paramètres > Système > Stockage."
+        }
+      }
+    },
+    "error": {
+      "invalid_target": "Saisis un service de notification commençant par notify., par exemple notify.mobile_app_pixel_9.",
+      "critical_below_warning": "Le seuil critique doit être supérieur au seuil d'avertissement."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "orphan_partition": {
+        "name": "Partition orpheline"
+      }
+    },
+    "sensor": {
+      "admin_notify_target": {
+        "name": "Téléphone admin"
+      },
+      "data_usage": {
+        "name": "Occupation du stockage data"
+      },
+      "mount_usage": {
+        "name": "Occupation du stockage {name}"
+      }
+    }
+  }
+}

@@ -38,3 +38,15 @@ $RECYCLE.BIN/
 # Built Visual Studio Code Extensions
 *.vsix
 
+
+# ---> Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Exports matériels locaux (contiennent des numéros de série)
+hw*.json
+.coverage
+htmlcov/

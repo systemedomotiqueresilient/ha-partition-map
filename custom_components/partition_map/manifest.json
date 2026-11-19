@@ -1,0 +1,22 @@
+{
+  "domain": "partition_map",
+  "name": "Partition Map",
+  "codeowners": [
+    "@systemedomotiqueresilient"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "hassio",
+    "http",
+    "panel_custom",
+    "persistent_notification",
+    "websocket_api"
+  ],
+  "documentation": "https://github.com/systemedomotiqueresilient/ha-partition-map",
+  "integration_type": "service",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/systemedomotiqueresilient/ha-partition-map/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "0.2.0"
+}
