@@ -36,6 +36,17 @@ const I18N = {
     updated: "Mis à jour",
     network: "Stockages réseau",
     free: "libre",
+    units_button: "Unités : {unit}",
+    units_title: "Basculer entre Go (base 1000, comme Home Assistant) et Gio (base 1024, comme Proxmox)",
+    note_dec:
+      "Tailles en Go (base 1000 : 1 Go = 1 000 000 000 octets), comme dans le reste de Home Assistant. " +
+      "Proxmox et la plupart des hyperviseurs comptent en Gio (base 1024 : 1 Gio = 1 073 741 824 octets, soit environ 7,4 % de plus). " +
+      "Exemple : {example}.",
+    note_bin:
+      "Tailles en Gio (base 1024), comme dans Proxmox. " +
+      "Home Assistant affiche des Go (base 1000) : ses valeurs paraissent environ 7,4 % plus grandes pour la même capacité. " +
+      "Exemple : {example}.",
+    note_rounding: "Les tailles sont lues à l'octet près ; seul l'affichage est arrondi.",
     roles: {
       boot: "Boot",
       kernel: "Noyau",
@@ -71,6 +82,17 @@ const I18N = {
     updated: "Updated",
     network: "Network storage",
     free: "free",
+    units_button: "Units: {unit}",
+    units_title: "Switch between GB (base 1000, like Home Assistant) and GiB (base 1024, like Proxmox)",
+    note_dec:
+      "Sizes in GB (base 1000: 1 GB = 1,000,000,000 bytes), like the rest of Home Assistant. " +
+      "Proxmox and most hypervisors count in GiB (base 1024: 1 GiB = 1,073,741,824 bytes, about 7.4% more). " +
+      "Example: {example}.",
+    note_bin:
+      "Sizes in GiB (base 1024), like Proxmox. " +
+      "Home Assistant shows GB (base 1000): its figures look about 7.4% larger for the same capacity. " +
+      "Example: {example}.",
+    note_rounding: "Sizes are read to the byte; only the display is rounded.",
     roles: {
       boot: "Boot",
       kernel: "Kernel",
@@ -85,16 +107,29 @@ const I18N = {
   },
 };
 
-const fmt = (bytes) => {
+const UNITS = {
+  fr: { dec: ["o", "Ko", "Mo", "Go", "To"], bin: ["o", "Kio", "Mio", "Gio", "Tio"] },
+  en: { dec: ["B", "kB", "MB", "GB", "TB"], bin: ["B", "KiB", "MiB", "GiB", "TiB"] },
+};
+const UNITS_KEY = "partition_map_units";
+
+const num = (value, decimals, lang) => {
+  const s = Number(value).toFixed(decimals);
+  return lang === "fr" ? s.replace(".", ",") : s;
+};
+
+// binary = true : base 1024 (Gio, comme Proxmox) ; false : base 1000 (Go, comme HA)
+const fmt = (bytes, binary = false, lang = "en") => {
   if (bytes == null) return "—";
-  const units = ["o", "Ko", "Mo", "Go", "To"];
+  const base = binary ? 1024 : 1000;
+  const units = (UNITS[lang] || UNITS.en)[binary ? "bin" : "dec"];
   let i = 0;
   let n = bytes;
-  while (n >= 1000 && i < units.length - 1) {
-    n /= 1000;
+  while (n >= base && i < units.length - 1) {
+    n /= base;
     i++;
   }
-  return `${n.toFixed(n < 10 && i > 0 ? 2 : n < 100 && i > 0 ? 1 : 0)} ${units[i]}`;
+  return `${num(n, n < 10 && i > 0 ? 2 : n < 100 && i > 0 ? 1 : 0, lang)} ${units[i]}`;
 };
 
 const esc = (s) =>
@@ -107,6 +142,44 @@ class PartitionMapPanel extends HTMLElement {
     this._data = null;
     this._error = null;
     this._loading = false;
+    try {
+      this._binary = window.localStorage.getItem(UNITS_KEY) === "bin";
+    } catch (err) {
+      this._binary = false;
+    }
+  }
+
+  get _lang() {
+    const lang = (this._hass?.language || "en").split("-")[0];
+    return UNITS[lang] ? lang : "en";
+  }
+
+  _fmt(bytes) {
+    return fmt(bytes, this._binary, this._lang);
+  }
+
+  _fmtAlt(bytes) {
+    return fmt(bytes, !this._binary, this._lang);
+  }
+
+  _unitLabel() {
+    return UNITS[this._lang][this._binary ? "bin" : "dec"][3];
+  }
+
+  _toggleUnits() {
+    this._binary = !this._binary;
+    try {
+      window.localStorage.setItem(UNITS_KEY, this._binary ? "bin" : "dec");
+    } catch (err) {
+      // stockage indisponible : le choix ne vaut que pour cette page
+    }
+    this._updateUnitsButton();
+    this._renderContent();
+  }
+
+  _updateUnitsButton() {
+    const btn = this.shadowRoot.getElementById("units");
+    if (btn) btn.textContent = this._t.units_button.replace("{unit}", this._unitLabel());
   }
 
   set hass(hass) {
@@ -181,11 +254,13 @@ class PartitionMapPanel extends HTMLElement {
         td.num { text-align:right; white-space:nowrap; }
         .dot { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px; }
         .legend { display:flex; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--secondary-text-color); }
+        .note { line-height:1.5; max-width:900px; }
         @media (max-width: 700px) { .hide-narrow { display:none; } }
       </style>
       <div class="toolbar">
         <span class="menu"></span>
         <span class="title">${esc(t.title)}</span>
+        <button id="units" title="${esc(t.units_title)}"></button>
         <button id="refresh">${esc(t.refresh)}</button>
       </div>
       <div class="content" id="content"></div>
@@ -195,6 +270,8 @@ class PartitionMapPanel extends HTMLElement {
     this._menu.narrow = this._narrow;
     this.shadowRoot.querySelector(".menu").appendChild(this._menu);
     this.shadowRoot.getElementById("refresh").addEventListener("click", () => this._load(true));
+    this.shadowRoot.getElementById("units").addEventListener("click", () => this._toggleUnits());
+    this._updateUnitsButton();
   }
 
   _renderContent() {
@@ -223,7 +300,18 @@ class PartitionMapPanel extends HTMLElement {
       this._data.disks.map((d) => this._disk(d)).join("") +
       this._mounts() +
       `<div class="legend">${legend}</div>` +
+      this._unitsNote() +
       `<div class="muted">${esc(t.updated)} : ${esc(updated)}</div>`;
+  }
+
+  _unitsNote() {
+    const t = this._t;
+    const disk = this._data.disks?.[0];
+    const dec = disk ? fmt(disk.size, false, this._lang) : "";
+    const bin = disk ? fmt(disk.size, true, this._lang) : "";
+    const example = disk ? `${esc(disk.device)} = ${esc(bin)} = ${esc(dec)}` : "";
+    const note = (this._binary ? t.note_bin : t.note_dec).replace("{example}", example);
+    return `<div class="muted note">ⓘ ${note} ${esc(t.note_rounding)}</div>`;
   }
 
   _mounts() {
@@ -237,9 +325,9 @@ class PartitionMapPanel extends HTMLElement {
         return `<div style="margin-top:12px">
           <div class="head" style="margin-bottom:6px">
             <span><span class="dev">${esc(m.id)}</span> <span class="muted">${esc(m.mount_type || "")}</span></span>
-            <span>${fmt(m.used_bytes)} / ${fmt(m.total_bytes)} · ${fmt(m.free_bytes)} ${esc(t.free)}</span>
+            <span>${this._fmt(m.used_bytes)} / ${this._fmt(m.total_bytes)} · ${this._fmt(m.free_bytes)} ${esc(t.free)}</span>
           </div>
-          <div class="bar" title="${pct} %"><div class="seg" style="flex:${Math.max(pct, 0.5)}; background-color:${color}">${pct >= 10 ? `<span>${pct} %</span>` : ""}</div><div class="seg gap" style="flex:${Math.max(100 - pct, 0.5)}"></div></div>
+          <div class="bar" title="${num(pct, 1, this._lang)} %"><div class="seg" style="flex:${Math.max(pct, 0.5)}; background-color:${color}">${pct >= 10 ? `<span>${num(pct, 1, this._lang)} %</span>` : ""}</div><div class="seg gap" style="flex:${Math.max(100 - pct, 0.5)}"></div></div>
         </div>`;
       })
       .join("");
@@ -258,7 +346,7 @@ class PartitionMapPanel extends HTMLElement {
       .map((it) => {
         const grow = Math.max(it.size / d.size, 0.002);
         if (it.kind === "gap") {
-          return `<div class="seg gap" style="flex:${grow}" title="${esc(t.unallocated)} · ${fmt(it.size)}">${grow >= 0.05 ? `<span>${esc(t.unallocated)}</span>` : ""}</div>`;
+          return `<div class="seg gap" style="flex:${grow}" title="${esc(t.unallocated)} · ${this._fmt(it.size)}">${grow >= 0.05 ? `<span>${esc(t.unallocated)}</span>` : ""}</div>`;
         }
         const p = it.p;
         let fill = "";
@@ -269,7 +357,7 @@ class PartitionMapPanel extends HTMLElement {
         const label = p.fs_label || p.part_name || p.device;
         const cls = p.role === "data_orphan" ? "seg orphan" : "seg";
         return `<div class="${cls}" style="flex:${grow}; background-color:${ROLE_COLORS[p.role] || ROLE_COLORS.other}"
-          title="${esc(p.device)} · ${esc(label)} · ${fmt(p.size)}">${fill}${grow >= 0.05 ? `<span>${esc(label)} ${fmt(p.size)}</span>` : ""}</div>`;
+          title="${esc(p.device)} · ${esc(label)} · ${this._fmt(p.size)}">${fill}${grow >= 0.05 ? `<span>${esc(label)} ${this._fmt(p.size)}</span>` : ""}</div>`;
       })
       .join("");
 
@@ -278,7 +366,7 @@ class PartitionMapPanel extends HTMLElement {
         const role = t.roles[p.role] || p.role;
         const slot = p.slot ? ` ${p.slot} · ${p.active ? t.active : t.inactive}` : "";
         let used = "—";
-        if (p.role === "data" && usage?.total_bytes) used = `${fmt(usage.used_bytes)}`;
+        if (p.role === "data" && usage?.total_bytes) used = `${this._fmt(usage.used_bytes)}`;
         const mount = p.mount_points.length
           ? esc(p.mount_points[0]) + (p.mount_points.length > 1 ? ` <span class="muted">+${p.mount_points.length - 1}</span>` : "")
           : `<span class="muted">${esc(t.not_mounted)}</span>`;
@@ -286,7 +374,7 @@ class PartitionMapPanel extends HTMLElement {
           <td><span class="dot" style="background:${ROLE_COLORS[p.role] || ROLE_COLORS.other}"></span>${esc(p.device)}</td>
           <td>${esc(p.part_name)}${p.fs_label && p.fs_label !== p.part_name ? ` <span class="muted">(${esc(p.fs_label)})</span>` : ""}</td>
           <td class="hide-narrow">${esc(p.fs_type || "—")}</td>
-          <td class="num">${fmt(p.size)}</td>
+          <td class="num">${this._fmt(p.size)}</td>
           <td class="num hide-narrow">${used}</td>
           <td>${esc(role)}${esc(slot)}</td>
           <td class="hide-narrow">${mount}</td>
@@ -296,8 +384,8 @@ class PartitionMapPanel extends HTMLElement {
 
     const orphanBytes = d.partitions.filter((p) => p.role === "data_orphan").reduce((s, p) => s + p.size, 0);
     const warnings =
-      (orphanBytes ? `<div class="warn">⚠ ${esc(t.orphan_warning)} : ${fmt(orphanBytes)}</div>` : "") +
-      (d.unallocated ? `<div class="warn soft">${esc(t.unalloc_warning)} : ${fmt(d.unallocated)}</div>` : "");
+      (orphanBytes ? `<div class="warn">⚠ ${esc(t.orphan_warning)} : ${this._fmt(orphanBytes)}</div>` : "") +
+      (d.unallocated ? `<div class="warn soft">${esc(t.unalloc_warning)} : ${this._fmt(d.unallocated)}</div>` : "");
 
     const badges =
       (d.is_boot ? `<span class="badge">${esc(t.boot)}</span>` : "") +
@@ -306,7 +394,7 @@ class PartitionMapPanel extends HTMLElement {
     return `<div class="card">
       <div class="head">
         <span><span class="dev">${esc(d.device)}</span> <span class="muted">${esc(d.vendor)} ${esc(d.model)} · ${esc(d.serial)}</span>${badges}</span>
-        <span>${fmt(d.size)}</span>
+        <span>${this._fmt(d.size)} <span class="muted">(${this._fmtAlt(d.size)})</span></span>
       </div>
       <div class="bar">${segs}</div>
       ${warnings}

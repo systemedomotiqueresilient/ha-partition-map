@@ -53,7 +53,7 @@ async def test_setup_and_entities(hass: HomeAssistant, supervisor, ha_deps) -> N
     assert orphan.attributes["partitions"] == ["/dev/sdb8"]
 
     diag = await async_get_config_entry_diagnostics(hass, entry)
-    assert diag["version"] == "0.2.0"
+    assert diag["version"] == "0.3.0"
     assert diag["layout"]["disks"][0]["serial"] == "**REDACTED**"
     assert diag["layout"]["hostname"] == "haos-test"
 

@@ -1,6 +1,6 @@
 # Partition Map
 
-![Version](https://img.shields.io/badge/version-0.2.0-blue)
+![Version](https://img.shields.io/badge/version-0.3.0-blue)
 
 Vue façon GParted des disques et partitions de Home Assistant OS : partitions orphelines, espace non alloué, slots A/B, sur un seul écran.
 
@@ -13,6 +13,7 @@ La carte « Stockage » de Home Assistant ne montre que la partition de données
 - L'occupation de la partition de données active
 - **Les partitions orphelines** : ancienne `hassos-data` (label `hassos-data-old`) non montée
 - **L'espace non alloué**, par exemple après l'agrandissement d'un disque dans Proxmox
+- Les tailles en **Go** (base 1000, comme le reste de Home Assistant) ou en **Gio** (base 1024, comme Proxmox), au choix avec le bouton « Unités ». Un disque de 34 Gio dans Proxmox s'affiche 36,5 Go dans Home Assistant : c'est la même capacité, comptée dans une autre base.
 
 Un capteur binaire `Partition orpheline` (catégorie diagnostic) passe à `on` quand de l'espace mort est détecté. Ses attributs donnent les partitions concernées, l'espace mort et l'espace non alloué en octets.
 

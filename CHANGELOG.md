@@ -2,6 +2,16 @@
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [0.3.0] - 2026-11-20
+
+### Ajouté
+- Panneau : bouton **Unités : Go / Gio** pour basculer entre base 1000 (comme Home Assistant) et base 1024 (comme Proxmox et la plupart des hyperviseurs). Le choix est mémorisé dans le navigateur.
+- Taille de chaque disque affichée dans les deux unités, par exemple `34,0 Gio (36,5 Go)`.
+- Note explicative sous la légende : écart d'environ 7,4 % entre les deux bases, avec un exemple pris sur le premier disque. Les tailles sont lues à l'octet près, seul l'affichage est arrondi.
+
+### Modifié
+- Panneau : unités et séparateur décimal selon la langue (`Go`/`Gio` et virgule en français, `GB`/`GiB` et point en anglais).
+
 ## [0.2.0] - 2026-11-19
 
 ### Ajouté
