@@ -1,6 +1,6 @@
 [project]
 name = "ha-partition-map"
-version = "0.3.0"
+version = "0.4.0"
 description = "Vue façon GParted des disques et partitions de Home Assistant OS"
 requires-python = ">=3.13"
 

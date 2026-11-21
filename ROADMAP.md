@@ -3,6 +3,8 @@
 ## Fait
 - 0.1.0 : vue façon GParted, partitions orphelines, espace non alloué, diagnostics.
 - 0.2.0 : téléphone admin (convention commune), alertes d'espace avec seuils et hystérésis, stockages réseau.
+- 0.3.0 : bouton d'unités Go / Gio dans le panneau.
+- 0.4.0 : admin_phone 1.1.0 (service ou entité notify), virgule décimale en français, rechargement automatique du panneau après une mise à jour.
 
 ## Prochaines étapes
 - [ ] Tester en conditions réelles sur HAOS Proxmox LENOVO (2 disques, BackUP_HAOS en NFS).
@@ -11,7 +13,7 @@
 - [ ] Notification de retour à la normale (optionnelle) et effacement de la notification sur le téléphone (`clear_notification` + tag).
 - [ ] Panneau : utiliser les seuils configurés pour colorer les barres (aujourd'hui 85/95 fixes côté interface).
 - [ ] Publication GitHub + HACS (dépôt `systemedomotiqueresilient/ha-partition-map`), workflows hassfest et HACS.
-- [ ] Recopier `admin_phone.py` 1.0.0 dans Sentinel Report, Deferred Restart et Entity Inventory.
+- [x] Module de référence publié dans ha-sdr (1.0.0, puis 1.1.0 par Entity Inventory) ; Partition Map en 1.1.0 depuis la 0.4.0.
 
 ## Hors périmètre
 - Toute action sur les disques (formatage, suppression, redimensionnement) : Partition Map reste en lecture seule.

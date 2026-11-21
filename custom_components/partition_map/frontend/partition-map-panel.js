@@ -34,6 +34,7 @@ const I18N = {
     orphan_warning: "Espace mort",
     unalloc_warning: "Espace non alloué",
     updated: "Mis à jour",
+    outdated: "Partition Map a été mise à jour ({version}). Recharge la page (Ctrl+F5) pour afficher le nouveau panneau.",
     network: "Stockages réseau",
     free: "libre",
     units_button: "Unités : {unit}",
@@ -80,6 +81,7 @@ const I18N = {
     orphan_warning: "Dead space",
     unalloc_warning: "Unallocated space",
     updated: "Updated",
+    outdated: "Partition Map was updated ({version}). Reload the page (Ctrl+F5) to get the new panel.",
     network: "Network storage",
     free: "free",
     units_button: "Units: {unit}",
@@ -112,6 +114,9 @@ const UNITS = {
   en: { dec: ["B", "kB", "MB", "GB", "TB"], bin: ["B", "KiB", "MiB", "GiB", "TiB"] },
 };
 const UNITS_KEY = "partition_map_units";
+// Doit être égal à la version de l'intégration (manifest.json) : vérifié par les tests.
+const PANEL_VERSION = "0.4.0";
+const RELOAD_KEY = "partition_map_reloaded_for";
 
 const num = (value, decimals, lang) => {
   const s = Number(value).toFixed(decimals);
@@ -211,11 +216,30 @@ class PartitionMapPanel extends HTMLElement {
         type: "partition_map/layout",
         refresh,
       });
+      if (this._reloadIfOutdated(this._data.version)) return;
     } catch (err) {
       this._error = err?.message || String(err);
     }
     this._loading = false;
     this._renderContent();
+  }
+
+  // Après une mise à jour, le navigateur garde l'ancien module JS : l'élément
+  // personnalisé ne peut pas être redéfini et ?v= ne suffit pas. On recharge
+  // la page une seule fois par version, sinon on affiche un bandeau.
+  _reloadIfOutdated(version) {
+    this._outdated = Boolean(version) && version !== PANEL_VERSION;
+    if (!this._outdated) return false;
+    try {
+      if (window.sessionStorage.getItem(RELOAD_KEY) !== version) {
+        window.sessionStorage.setItem(RELOAD_KEY, version);
+        window.location.reload();
+        return true;
+      }
+    } catch (err) {
+      // stockage de session indisponible : bandeau seulement
+    }
+    return false;
   }
 
   _renderShell() {
@@ -287,6 +311,9 @@ class PartitionMapPanel extends HTMLElement {
       return;
     }
     if (!this._data) return;
+    const banner = this._outdated
+      ? `<div class="card warn">${esc(t.outdated.replace("{version}", this._data.version))}</div>`
+      : "";
 
     const legend = Object.entries(t.roles)
       .map(([role, label]) => {
@@ -297,6 +324,7 @@ class PartitionMapPanel extends HTMLElement {
 
     const updated = this._data.updated ? new Date(this._data.updated).toLocaleString(this._hass.language) : "";
     root.innerHTML =
+      banner +
       this._data.disks.map((d) => this._disk(d)).join("") +
       this._mounts() +
       `<div class="legend">${legend}</div>` +

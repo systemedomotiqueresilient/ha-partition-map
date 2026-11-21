@@ -8,12 +8,12 @@
           "admin_notify_target": "Admin phone"
         },
         "data_description": {
-          "admin_notify_target": "Notification service for storage alerts, for example notify.mobile_app_pixel_9. Pre-filled when another of your integrations already defines it. Leave empty to only get persistent notifications."
+          "admin_notify_target": "Notification service or notify entity for storage alerts, for example notify.mobile_app_pixel_9. Pre-filled when another of your integrations already defines it. Leave empty to only get persistent notifications."
         }
       }
     },
     "error": {
-      "invalid_target": "Enter a notification service starting with notify., for example notify.mobile_app_pixel_9."
+      "invalid_target": "Enter a notification service or a notify entity starting with notify., for example notify.mobile_app_pixel_9."
     },
     "abort": {
       "not_supervised": "Partition Map needs Home Assistant OS or Supervised: disk data comes from the Supervisor.",
@@ -31,7 +31,7 @@
           "include_mounts": "Watch network storage"
         },
         "data_description": {
-          "admin_notify_target": "Notification service for storage alerts. Leave empty to only get persistent notifications.",
+          "admin_notify_target": "Notification service or notify entity for storage alerts. Leave empty to only get persistent notifications.",
           "warning_threshold": "Usage percentage that triggers a warning.",
           "critical_threshold": "Usage percentage that triggers a critical alert. Must be above the warning threshold.",
           "include_mounts": "Also watch backup and media shares added under Settings > System > Storage."
@@ -39,7 +39,7 @@
       }
     },
     "error": {
-      "invalid_target": "Enter a notification service starting with notify., for example notify.mobile_app_pixel_9.",
+      "invalid_target": "Enter a notification service or a notify entity starting with notify., for example notify.mobile_app_pixel_9.",
       "critical_below_warning": "The critical threshold must be above the warning threshold."
     }
   },

@@ -2,6 +2,18 @@
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [0.4.0] - 2026-11-21
+
+### Modifié
+- Module commun `admin_phone.py` passé en **MODULE_VERSION 1.1.0**, copié tel quel depuis ha-sdr (commit dfc42ab, SHA-256 `32b3619e…e1f9`, vérifié par un test).
+- **Le téléphone admin peut être un service** `notify.<service>` **ou une entité notify**, envoyée via `notify.send_message`. Les alertes partent par `async_notify_admin` ; un échec d'envoi est seulement journalisé.
+- Le formulaire propose aussi les entités notify de l'application mobile.
+- **Notifications en français : virgule décimale**, par exemple « 92,8 % utilisé (200 Go sur 216 Go, 15,5 Go libres) ». En anglais, le point est conservé.
+- Notifications vers un service `notify.mobile_app_*` : ajout de `notification_icon: mdi:harddisk`, affiché par Android et ignoré par iOS.
+
+### Corrigé
+- **Panneau après une mise à jour** : le navigateur gardait l'ancien module JS, puisque l'élément personnalisé ne peut pas être redéfini et que `?v=` ne suffit pas. La commande WebSocket renvoie maintenant la version ; si elle diffère de `PANEL_VERSION`, le panneau recharge la page une fois, puis affiche un bandeau « Recharge la page ». Un test vérifie que `PANEL_VERSION` correspond à la version de l'intégration.
+
 ## [0.3.0] - 2026-11-20
 
 ### Ajouté

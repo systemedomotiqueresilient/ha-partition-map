@@ -21,6 +21,7 @@ from .const import (
     MOUNT_USAGE_TIMEOUT,
     STORAGE_DATA,
     UPDATE_INTERVAL,
+    VERSION,
 )
 from .layout import Disk, as_dict, build_layout
 from .supervisor import async_supervisor_get
@@ -70,6 +71,7 @@ class PartitionMapData:
             },
             "hostname": self.hostname,
             "updated": self.updated,
+            "version": VERSION,  # comparé à PANEL_VERSION par le panneau
         }
 
 

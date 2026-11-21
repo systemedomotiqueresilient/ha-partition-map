@@ -42,6 +42,7 @@ def test_format_bytes() -> None:
     units = ["o", "Ko", "Mo", "Go", "To"]
     assert format_bytes(512, units) == "512 o"
     assert format_bytes(int(33.6 * GB), units) == "33.6 Go"
+    assert format_bytes(int(33.6 * GB), units, ",") == "33,6 Go"
     assert format_bytes(int(215.51 * GB), units) == "216 Go"
 
 
@@ -87,8 +88,13 @@ async def test_threshold_crossing_once(
         "⚠️ haos-test - Stockage presque plein",
     ]
     warning = next(c for c in phone if "Stockage" in c.data["title"])
-    assert warning.data["data"] == {"tag": "partition_map_BackUP_HAOS"}
-    assert "Stockage réseau BackUP_HAOS : 92.8 % utilisé" in warning.data["message"]
+    assert warning.data["data"] == {
+        "tag": "partition_map_BackUP_HAOS",
+        "notification_icon": "mdi:harddisk",
+    }
+    assert warning.data["message"] == (
+        "Stockage réseau BackUP_HAOS : 92,8 % utilisé (200 Go sur 216 Go, 15,5 Go libres)"
+    )
     assert persistent.async_create.call_count == 2
 
     # Nouvelle lecture identique : pas de doublon
@@ -160,3 +166,21 @@ async def test_english_texts(hass: HomeAssistant, supervisor, ha_deps, phone, pe
     hass.config.language = "en"
     await _setup(hass)
     assert "⚠️ haos-test - Storage almost full" in _titles(phone)
+    warning = next(c for c in phone if "Storage" in c.data["title"])
+    assert "92.8% used (200 GB of 216 GB, 15.5 GB free)" in warning.data["message"]
+
+
+async def test_notify_entity_target(hass: HomeAssistant, supervisor, ha_deps, persistent) -> None:
+    """Module 1.1.0 : une entité notify passe par notify.send_message, sans data."""
+    sent: list[ServiceCall] = []
+
+    async def send_message(call: ServiceCall) -> None:
+        sent.append(call)
+
+    hass.services.async_register("notify", "send_message", send_message)
+    hass.states.async_set("notify.pixel_9", "unknown")
+    await _setup(hass, admin_notify_target="notify.pixel_9")
+
+    assert len(sent) == 2
+    assert {c.data["entity_id"] for c in sent} == {"notify.pixel_9"}
+    assert all("data" not in c.data for c in sent)

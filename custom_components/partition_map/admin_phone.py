@@ -1,6 +1,6 @@
 """Téléphone de l'administrateur : module commun aux intégrations SDR.
 
-MODULE_VERSION = "1.0.0"
+MODULE_VERSION = "1.1.0"
 
 Ce fichier est copié À L'IDENTIQUE dans chaque intégration (Sentinel Report,
 Deferred Restart, Entity Inventory, Package Keeper, Partition Map…). Une
@@ -11,24 +11,31 @@ puis être recopiée dans tous les dépôts.
 Convention :
 - Chaque intégration crée SA PROPRE entité capteur (plateforme sensor,
   catégorie diagnostic) dont l'unique_id vaut "<entry_id>_admin_notify_target".
-- État : le service de notification choisi (ex. "notify.mobile_app_pixel_9"),
-  ou None (état "unknown" dans HA) s'il n'est pas défini.
+- État : la cible choisie, ou None (état "unknown" dans HA) si elle n'est pas
+  définie. Deux formes sont acceptées (1.1.0) : un service de notification
+  (ex. "notify.mobile_app_pixel_9") ou une entité notify (ex. "notify.pixel_9").
 - Attribut "notify_service" : même valeur que l'état.
 - La valeur est copiée dans les données de l'entrée de config : elle reste
   valable si l'intégration sœur qui l'avait proposée est supprimée.
 
 Ce module est en LECTURE SEULE : il ne modifie jamais une autre intégration,
-une autre entité ni le registre.
+une autre entité ni le registre. Sa seule action est l'envoi d'une
+notification vers la cible (async_notify_admin).
 """
 
 from __future__ import annotations
 
-from typing import Final
+import logging
+from typing import Any, Final
 
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
+import voluptuous as vol
 
-MODULE_VERSION: Final = "1.0.0"
+MODULE_VERSION: Final = "1.1.0"
+
+_LOGGER = logging.getLogger(__name__)
 
 CONF_ADMIN_NOTIFY_TARGET: Final = "admin_notify_target"
 ADMIN_TARGET_SUFFIX: Final = "_admin_notify_target"
@@ -49,7 +56,7 @@ _UNSET: Final = frozenset({"", "unknown", "unavailable", "none"})
 
 
 def is_valid_target(value: object) -> bool:
-    """Vrai pour une chaîne du type "notify.<service>"."""
+    """Vrai pour une chaîne du type "notify.<service>" ou "notify.<entité>"."""
     if not isinstance(value, str):
         return False
     value = value.strip()
@@ -95,6 +102,20 @@ def list_mobile_notify_services(hass: HomeAssistant) -> list[str]:
 
 
 @callback
+def list_mobile_notify_entities(hass: HomeAssistant) -> list[str]:
+    """Entités notify de l'application mobile (appelées via notify.send_message)."""
+    registry = er.async_get(hass)
+    return sorted(
+        entry.entity_id
+        for entry in registry.entities.values()
+        if entry.domain == "notify"
+        and entry.platform == "mobile_app"
+        and not entry.disabled_by
+        and hass.states.get(entry.entity_id) is not None
+    )
+
+
+@callback
 def suggest_admin_target(
     hass: HomeAssistant, current: str | None = None
 ) -> tuple[str | None, list[str]]:
@@ -103,10 +124,11 @@ def suggest_admin_target(
     - une valeur courante valide est toujours prioritaire ;
     - une seule valeur trouvée chez les sœurs : elle est préremplie ;
     - plusieurs valeurs différentes : rien n'est prérempli, liste de choix ;
-    - aucune : liste des services notify.mobile_app_*.
+    - aucune : liste des services notify.mobile_app_* puis des entités notify
+      de l'application mobile (1.1.0).
     """
     siblings = find_admin_targets(hass)
-    mobiles = list_mobile_notify_services(hass)
+    mobiles = list_mobile_notify_services(hass) + list_mobile_notify_entities(hass)
     current = normalize_target(current)
 
     choices: list[str] = []
@@ -121,3 +143,49 @@ def suggest_admin_target(
     else:
         default = None
     return default, choices
+
+
+async def async_notify_admin(
+    hass: HomeAssistant,
+    target: object,
+    title: str,
+    message: str,
+    data: dict[str, Any] | None = None,
+) -> bool:
+    """Envoie une notification à la cible ; renvoie True si l'appel a abouti.
+
+    - entité notify existante (ex. "notify.pixel_9") : action notify.send_message ;
+    - sinon service notify.<nom> enregistré (ex. "notify.mobile_app_pixel_9") :
+      appel direct, avec `data` transmis tel quel ;
+    - cible absente ou introuvable : rien n'est envoyé, False.
+
+    Ne lève jamais d'exception : un échec d'envoi ne doit pas bloquer
+    l'intégration appelante (il est seulement journalisé). `data` n'est pas
+    transmis à notify.send_message, qui ne l'accepte pas.
+    """
+    target = normalize_target(target)
+    if target is None:
+        return False
+    name = target.removeprefix("notify.")
+    try:
+        if hass.states.get(target) is not None and hass.services.has_service(
+            "notify", "send_message"
+        ):
+            await hass.services.async_call(
+                "notify",
+                "send_message",
+                {"entity_id": target, "title": title, "message": message},
+                blocking=True,
+            )
+            return True
+        if name != "send_message" and hass.services.has_service("notify", name):
+            payload: dict[str, Any] = {"title": title, "message": message}
+            if data:
+                payload["data"] = data
+            await hass.services.async_call("notify", name, payload, blocking=True)
+            return True
+    except (HomeAssistantError, vol.Invalid) as err:
+        _LOGGER.warning("Notification vers %s impossible : %s", target, err)
+        return False
+    _LOGGER.warning("Notification impossible : %s introuvable", target)
+    return False

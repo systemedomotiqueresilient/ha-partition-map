@@ -15,7 +15,7 @@ from homeassistant.components import persistent_notification
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 
-from .admin_phone import CONF_ADMIN_NOTIFY_TARGET, normalize_target
+from .admin_phone import CONF_ADMIN_NOTIFY_TARGET, async_notify_admin
 from .const import (
     ALERT_STORE_VERSION,
     CONF_CRITICAL_THRESHOLD,
@@ -39,6 +39,8 @@ LEVEL_WARNING = 1
 LEVEL_CRITICAL = 2
 
 ORPHAN_ID = "orphan"
+# Icône MDI affichée par l'application Android (ignorée sur iOS)
+NOTIFICATION_ICON = "mdi:harddisk"
 
 TEXTS = {
     "fr": {
@@ -51,6 +53,7 @@ TEXTS = {
         "orphan": "{devices} n'est plus utilisée : {size} d'espace mort. "
         "Ancienne partition de données laissée après un déplacement du disque de données.",
         "units": ["o", "Ko", "Mo", "Go", "To"],
+        "decimal": ",",
     },
     "en": {
         "warning_title": "⚠️ {host} - Storage almost full",
@@ -62,6 +65,7 @@ TEXTS = {
         "orphan": "{devices} is no longer used: {size} of dead space. "
         "Old data partition left behind after moving the data disk.",
         "units": ["B", "kB", "MB", "GB", "TB"],
+        "decimal": ".",
     },
 }
 
@@ -87,14 +91,18 @@ def compute_level(
     return raw
 
 
-def format_bytes(value: int, units: list[str]) -> str:
+def format_number(value: float, decimals: int, decimal: str = ".") -> str:
+    return f"{value:.{decimals}f}".replace(".", decimal)
+
+
+def format_bytes(value: int, units: list[str], decimal: str = ".") -> str:
     size = float(value)
     i = 0
     while size >= 1000 and i < len(units) - 1:
         size /= 1000
         i += 1
     decimals = 0 if i == 0 or size >= 100 else 1
-    return f"{size:.{decimals}f} {units[i]}"
+    return f"{format_number(size, decimals, decimal)} {units[i]}"
 
 
 class AlertManager:
@@ -169,10 +177,10 @@ class AlertManager:
         title = t[key].format(host=data.hostname)
         message = t["usage"].format(
             label=self._label(storage),
-            percent=storage.percent,
-            used=format_bytes(storage.used_bytes, t["units"]),
-            total=format_bytes(storage.total_bytes, t["units"]),
-            free=format_bytes(storage.free_bytes, t["units"]),
+            percent=format_number(storage.percent or 0, 1, t["decimal"]),
+            used=format_bytes(storage.used_bytes, t["units"], t["decimal"]),
+            total=format_bytes(storage.total_bytes, t["units"], t["decimal"]),
+            free=format_bytes(storage.free_bytes, t["units"], t["decimal"]),
         )
         await self._async_send(self._notification_id(storage.id), title, message)
 
@@ -181,7 +189,7 @@ class AlertManager:
         title = t["orphan_title"].format(host=data.hostname)
         message = t["orphan"].format(
             devices=", ".join(sorted(orphans)),
-            size=format_bytes(sum(orphans.values()), t["units"]),
+            size=format_bytes(sum(orphans.values()), t["units"], t["decimal"]),
         )
         await self._async_send(self._notification_id(ORPHAN_ID), title, message)
 
@@ -189,17 +197,13 @@ class AlertManager:
         persistent_notification.async_create(
             self.hass, message, title=title, notification_id=notification_id
         )
-        target = normalize_target(self.entry.data.get(CONF_ADMIN_NOTIFY_TARGET))
-        if target is None:
-            return
-        domain, service = target.split(".", 1)
-        if not self.hass.services.has_service(domain, service):
-            _LOGGER.warning("Service de notification %s introuvable", target)
-            return
-        # Le tag fait remplacer la notification précédente sur le téléphone.
-        await self.hass.services.async_call(
-            domain,
-            service,
-            {"title": title, "message": message, "data": {"tag": notification_id}},
-            blocking=False,
+        # Module commun 1.1.0 : service notify.<nom> ou entité notify. Le tag
+        # (service seulement) remplace la notification précédente sur le téléphone.
+        # Ne lève jamais d'exception ; un échec est journalisé par le module.
+        await async_notify_admin(
+            self.hass,
+            self.entry.data.get(CONF_ADMIN_NOTIFY_TARGET),
+            title,
+            message,
+            data={"tag": notification_id, "notification_icon": NOTIFICATION_ICON},
         )

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import hashlib
+from pathlib import Path
+
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 
@@ -24,7 +27,7 @@ def _register_notify(hass: HomeAssistant, *names: str) -> None:
 
 
 def test_module_header() -> None:
-    assert MODULE_VERSION == "1.0.0"
+    assert MODULE_VERSION == "1.1.0"
     assert {
         "sentinel_report",
         "deferred_restart",
@@ -32,6 +35,14 @@ def test_module_header() -> None:
         "package_keeper",
         "partition_map",
     } == set(SIBLING_PLATFORMS)
+
+
+def test_copy_is_reference_1_1_0() -> None:
+    """admin_phone.py doit être la copie exacte de ha-sdr 1.1.0 (commit dfc42ab)."""
+    source = Path(__file__).parents[1] / "custom_components/partition_map/admin_phone.py"
+    assert hashlib.sha256(source.read_bytes()).hexdigest() == (
+        "32b3619e975eaeb0606252b4cdca9f3d2402854193f88619cd4bde383b30e1f9"
+    )
 
 
 def test_valid_target() -> None:

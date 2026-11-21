@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+import re
+
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 
+from custom_components.partition_map.const import VERSION
 from custom_components.partition_map.diagnostics import (
     async_get_config_entry_diagnostics,
 )
@@ -53,7 +58,9 @@ async def test_setup_and_entities(hass: HomeAssistant, supervisor, ha_deps) -> N
     assert orphan.attributes["partitions"] == ["/dev/sdb8"]
 
     diag = await async_get_config_entry_diagnostics(hass, entry)
-    assert diag["version"] == "0.3.0"
+    assert diag["version"] == "0.4.0"
+    assert diag["admin_phone_module"] == "1.1.0"
+    assert diag["layout"]["version"] == "0.4.0"
     assert diag["layout"]["disks"][0]["serial"] == "**REDACTED**"
     assert diag["layout"]["hostname"] == "haos-test"
 
@@ -108,3 +115,12 @@ async def test_options_change_reloads(hass: HomeAssistant, supervisor, ha_deps) 
     await hass.async_block_till_done()
     target = hass.states.get(_entity(hass, "sensor", f"{entry.entry_id}_admin_notify_target"))
     assert target.state == "notify.mobile_app_new"
+
+
+def test_panel_version_matches_integration() -> None:
+    """PANEL_VERSION du JS doit suivre la version : sinon boucle de rechargement."""
+    root = Path(__file__).parents[1] / "custom_components/partition_map"
+    js = (root / "frontend/partition-map-panel.js").read_text()
+    manifest = json.loads((root / "manifest.json").read_text())
+    match = re.search(r'const PANEL_VERSION = "([^"]+)";', js)
+    assert match and match.group(1) == manifest["version"] == VERSION
