@@ -14,7 +14,8 @@
 - [ ] Ajouter automatiquement les capteurs des montages réseau créés après l'installation (aujourd'hui : rechargement nécessaire).
 - [ ] Notification de retour à la normale (optionnelle) et effacement de la notification sur le téléphone (`clear_notification` + tag).
 - [ ] Panneau : utiliser les seuils configurés pour colorer les barres (aujourd'hui 85/95 fixes côté interface).
-- [ ] Publication GitHub + HACS (dépôt `systemedomotiqueresilient/ha-partition-map`), workflows hassfest et HACS.
+- [x] Icône (brand/) et workflows hassfest, HACS et tests prêts.
+- [ ] Publication GitHub (dépôt public `systemedomotiqueresilient/ha-partition-map`, release v0.4.1) puis ajout comme dépôt personnalisé dans HACS.
 - [x] Module de référence publié dans ha-sdr (1.0.0, puis 1.1.0 par Entity Inventory) ; Partition Map en 1.1.0 depuis la 0.4.0.
 
 ## Hors périmètre

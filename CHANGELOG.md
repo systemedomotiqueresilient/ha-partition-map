@@ -4,6 +4,10 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), ver
 
 ## [0.4.1] - 2026-11-21
 
+### Ajouté
+- **Icône de l'intégration** dans `custom_components/partition_map/brand/` (`icon.png` 256 × 256 et `icon@2x.png` 512 × 512, fond transparent), affichée par Home Assistant 2026.3 et plus récent. Source modifiable : `assets/icon.svg`.
+- Workflow GitHub `validate.yaml` : hassfest, validation HACS, ruff et pytest (couverture minimale 50 %).
+
 ### Modifié
 - Module commun `admin_phone.py` passé en **MODULE_VERSION 1.2.0**, copié tel quel depuis ha-sdr (commit 77a8992, SHA-256 `1d720150…545b`, vérifié par un test). Outdoor Brief fait désormais partie des intégrations sœurs : le téléphone admin choisi dans Outdoor Brief est proposé à l'installation de Partition Map. Le code de Partition Map est inchangé.
 

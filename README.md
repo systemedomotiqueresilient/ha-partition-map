@@ -1,3 +1,5 @@
+<img src="custom_components/partition_map/brand/icon.png" alt="" width="96" align="right">
+
 # Partition Map
 
 ![Version](https://img.shields.io/badge/version-0.4.1-blue)
