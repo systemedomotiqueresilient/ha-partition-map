@@ -1,9 +1,9 @@
 """Téléphone de l'administrateur : module commun aux intégrations SDR.
 
-MODULE_VERSION = "1.1.0"
+MODULE_VERSION = "1.2.0"
 
 Ce fichier est copié À L'IDENTIQUE dans chaque intégration (Sentinel Report,
-Deferred Restart, Entity Inventory, Package Keeper, Partition Map…). Une
+Deferred Restart, Entity Inventory, Package Keeper, Partition Map, Outdoor Brief…). Une
 intégration personnalisée ne peut pas dépendre d'un paquet partagé : la
 cohérence repose sur la copie. Toute modification doit monter MODULE_VERSION
 puis être recopiée dans tous les dépôts.
@@ -33,7 +33,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
 import voluptuous as vol
 
-MODULE_VERSION: Final = "1.1.0"
+MODULE_VERSION: Final = "1.2.0"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,7 +46,8 @@ SIBLING_PLATFORMS: Final = frozenset(
     {
         "deferred_restart",
         "entity_inventory",
-        "package_keeper",  # réservé : intégration pas encore commencée
+        "outdoor_brief",
+        "package_keeper",
         "partition_map",
         "sentinel_report",
     }

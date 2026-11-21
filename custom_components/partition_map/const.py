@@ -5,7 +5,7 @@ from typing import Final
 
 DOMAIN: Final = "partition_map"
 NAME: Final = "Partition Map"
-VERSION: Final = "0.4.0"
+VERSION: Final = "0.4.1"
 
 # L'occupation est relue souvent, la table des partitions rarement.
 UPDATE_INTERVAL: Final = timedelta(minutes=5)

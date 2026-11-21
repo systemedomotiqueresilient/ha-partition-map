@@ -2,6 +2,11 @@
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [0.4.1] - 2026-11-21
+
+### Modifié
+- Module commun `admin_phone.py` passé en **MODULE_VERSION 1.2.0**, copié tel quel depuis ha-sdr (commit 77a8992, SHA-256 `1d720150…545b`, vérifié par un test). Outdoor Brief fait désormais partie des intégrations sœurs : le téléphone admin choisi dans Outdoor Brief est proposé à l'installation de Partition Map. Le code de Partition Map est inchangé.
+
 ## [0.4.0] - 2026-11-21
 
 ### Modifié

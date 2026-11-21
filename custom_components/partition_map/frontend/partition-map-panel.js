@@ -115,7 +115,7 @@ const UNITS = {
 };
 const UNITS_KEY = "partition_map_units";
 // Doit être égal à la version de l'intégration (manifest.json) : vérifié par les tests.
-const PANEL_VERSION = "0.4.0";
+const PANEL_VERSION = "0.4.1";
 const RELOAD_KEY = "partition_map_reloaded_for";
 
 const num = (value, decimals, lang) => {

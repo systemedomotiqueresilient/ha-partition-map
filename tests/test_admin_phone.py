@@ -27,21 +27,22 @@ def _register_notify(hass: HomeAssistant, *names: str) -> None:
 
 
 def test_module_header() -> None:
-    assert MODULE_VERSION == "1.1.0"
+    assert MODULE_VERSION == "1.2.0"
     assert {
         "sentinel_report",
         "deferred_restart",
         "entity_inventory",
+        "outdoor_brief",
         "package_keeper",
         "partition_map",
     } == set(SIBLING_PLATFORMS)
 
 
-def test_copy_is_reference_1_1_0() -> None:
-    """admin_phone.py doit être la copie exacte de ha-sdr 1.1.0 (commit dfc42ab)."""
+def test_copy_is_reference_1_2_0() -> None:
+    """admin_phone.py doit être la copie exacte de ha-sdr 1.2.0 (commit 77a8992)."""
     source = Path(__file__).parents[1] / "custom_components/partition_map/admin_phone.py"
     assert hashlib.sha256(source.read_bytes()).hexdigest() == (
-        "32b3619e975eaeb0606252b4cdca9f3d2402854193f88619cd4bde383b30e1f9"
+        "1d720150ff1c709547018236afcb1c555e630c504be0c34b20fe0b79ed80545b"
     )
 
 
@@ -73,6 +74,12 @@ async def test_one_found(hass: HomeAssistant) -> None:
     default, choices = suggest_admin_target(hass)
     assert default == "notify.mobile_app_pixel_9"
     assert choices[0] == "notify.mobile_app_pixel_9"
+
+
+async def test_outdoor_brief_sibling_prefilled(hass: HomeAssistant) -> None:
+    """1.2.0 : le téléphone choisi dans Outdoor Brief est proposé à Partition Map."""
+    add_sibling_target(hass, "outdoor_brief", "notify.mobile_app_pixel_9")
+    assert suggest_admin_target(hass)[0] == "notify.mobile_app_pixel_9"
 
 
 async def test_same_value_twice_is_one(hass: HomeAssistant) -> None:

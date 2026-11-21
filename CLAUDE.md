@@ -24,7 +24,7 @@ Elle est en **lecture seule** : aucune action sur les disques. Elle ne se connec
 Endpoints utilisés : `/hardware/info`, `/host/info`, `/host/disks/default/usage`, `/mounts`, `/host/disks/{montage}/usage`.
 
 ## Convention « téléphone admin » (commune à toutes les intégrations SDR)
-- `admin_phone.py` est copié **à l'identique** depuis le dépôt de référence `systemedomotiqueresilient/ha-sdr` (actuellement MODULE_VERSION 1.1.0, SHA-256 vérifié par `tests/test_admin_phone.py`). Ne jamais le modifier ici : toute évolution se fait dans ha-sdr, puis on recopie et on met à jour l'empreinte du test.
+- `admin_phone.py` est copié **à l'identique** depuis le dépôt de référence `systemedomotiqueresilient/ha-sdr` (actuellement MODULE_VERSION 1.2.0, SHA-256 vérifié par `tests/test_admin_phone.py`). Ne jamais le modifier ici : toute évolution se fait dans ha-sdr, puis on recopie et on met à jour l'empreinte du test.
 - Synchronisation entre agents : carnet Evernote « HA Intégrations – Synchro IA » (00 protocole, 01 spec, 02 journal, 10 fiche Partition Map à tenir à jour).
 - Chaque intégration crée **sa propre** entité `sensor`, de catégorie `diagnostic` (HA refuse `config` sur un capteur), avec l'unique_id `<entry_id>_admin_notify_target`.
 - État et attribut `notify_service` : le service choisi, ou `None` (état `unknown`).

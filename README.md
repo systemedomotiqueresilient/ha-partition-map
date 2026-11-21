@@ -1,6 +1,6 @@
 # Partition Map
 
-![Version](https://img.shields.io/badge/version-0.4.0-blue)
+![Version](https://img.shields.io/badge/version-0.4.1-blue)
 
 Vue façon GParted des disques et partitions de Home Assistant OS : partitions orphelines, espace non alloué, slots A/B, sur un seul écran.
 
@@ -30,7 +30,7 @@ Partition Map surveille l'occupation de la partition data active et, si l'option
 
 ## Téléphone admin (convention commune)
 
-Le téléphone admin est la cible de notification de l'administrateur, partagée par convention entre mes intégrations (Sentinel Report, Deferred Restart, Entity Inventory, Package Keeper, Partition Map) :
+Le téléphone admin est la cible de notification de l'administrateur, partagée par convention entre mes intégrations (Sentinel Report, Deferred Restart, Entity Inventory, Package Keeper, Outdoor Brief, Partition Map) :
 
 - chaque intégration crée **sa propre** entité diagnostic « Téléphone admin » (`<entry_id>_admin_notify_target`) ; son état et son attribut `notify_service` contiennent le service choisi ;
 - la cible peut être un service (`notify.mobile_app_…`) ou une entité notify de l'application mobile ;
@@ -39,7 +39,7 @@ Le téléphone admin est la cible de notification de l'administrateur, partagée
 - elle se modifie ensuite par **Paramètres → Appareils et services → Partition Map → Configurer** ;
 - rien n'est jamais écrit dans une autre intégration.
 
-Le module `admin_phone.py` (version 1.1.0) est copié tel quel depuis le dépôt de référence `ha-sdr` ; il ne se modifie jamais dans Partition Map.
+Le module `admin_phone.py` (version 1.2.0) est copié tel quel depuis le dépôt de référence `ha-sdr` ; il ne se modifie jamais dans Partition Map.
 
 Partition Map est **en lecture seule** : aucune action sur les disques.
 
