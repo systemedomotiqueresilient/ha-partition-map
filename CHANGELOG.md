@@ -2,6 +2,11 @@
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [0.5.0] - 2026-11-24
+
+### Ajouté
+- **Option « Détail du tableau des partitions »** (Simple / Détaillé) dans les options de l'intégration. En mode Simple, le tableau sous chaque barre ne liste que les partitions de données (`hassos-data`, `hassos-data-old`, `hassos-data-external`) et les partitions hors HAOS ; les partitions système (boot, noyaux, systèmes A/B, bootstate, overlay) sont masquées, avec une ligne qui indique combien. La barre, les alertes et les capteurs ne changent pas. Par défaut : Détaillé, comme avant.
+
 ## [0.4.1] - 2026-11-21
 
 ### Ajouté

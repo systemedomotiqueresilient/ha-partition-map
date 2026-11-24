@@ -116,6 +116,7 @@ async def test_options_flow(hass: HomeAssistant) -> None:
             "warning_threshold": 80,
             "critical_threshold": 92,
             "include_mounts": False,
+            "detail_level": "simple",
         },
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
@@ -124,4 +125,5 @@ async def test_options_flow(hass: HomeAssistant) -> None:
         "warning_threshold": 80,
         "critical_threshold": 92,
         "include_mounts": False,
+        "detail_level": "simple",
     }

@@ -6,6 +6,7 @@
 - 0.3.0 : bouton d'unités Go / Gio dans le panneau.
 - 0.4.0 : admin_phone 1.1.0 (service ou entité notify), virgule décimale en français, rechargement automatique du panneau après une mise à jour.
 - 0.4.1 : admin_phone 1.2.0 (Outdoor Brief ajouté aux intégrations sœurs).
+- 0.5.0 : niveau de détail du tableau (Simple / Détaillé).
 
 ## Prochaines étapes
 - [ ] admin_phone 1.3.0 (reconnaissance ouverte des sœurs : marqueur `admin_phone_convention`, codeowners) : en attente du feu vert de Mathieu, voir le journal Evernote.

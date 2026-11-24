@@ -35,6 +35,7 @@ const I18N = {
     unalloc_warning: "Espace non alloué",
     updated: "Mis à jour",
     outdated: "Partition Map a été mise à jour ({version}). Recharge la page (Ctrl+F5) pour afficher le nouveau panneau.",
+    hidden_system: "{count} partitions système HAOS masquées (mode simple, réglable dans les options de l'intégration).",
     network: "Stockages réseau",
     free: "libre",
     units_button: "Unités : {unit}",
@@ -82,6 +83,7 @@ const I18N = {
     unalloc_warning: "Unallocated space",
     updated: "Updated",
     outdated: "Partition Map was updated ({version}). Reload the page (Ctrl+F5) to get the new panel.",
+    hidden_system: "{count} HAOS system partitions hidden (simple mode, change it in the integration options).",
     network: "Network storage",
     free: "free",
     units_button: "Units: {unit}",
@@ -115,8 +117,10 @@ const UNITS = {
 };
 const UNITS_KEY = "partition_map_units";
 // Doit être égal à la version de l'intégration (manifest.json) : vérifié par les tests.
-const PANEL_VERSION = "0.4.1";
+const PANEL_VERSION = "0.5.0";
 const RELOAD_KEY = "partition_map_reloaded_for";
+// Mode « simple » : rôles masqués dans le tableau (la barre reste complète)
+const SYSTEM_ROLES = new Set(["boot", "kernel", "system", "bootstate", "overlay"]);
 
 const num = (value, decimals, lang) => {
   const s = Number(value).toFixed(decimals);
@@ -389,7 +393,13 @@ class PartitionMapPanel extends HTMLElement {
       })
       .join("");
 
-    const rows = d.partitions
+    const simple = this._data.detail_level === "simple";
+    const shown = simple ? d.partitions.filter((p) => !SYSTEM_ROLES.has(p.role)) : d.partitions;
+    const hiddenCount = d.partitions.length - shown.length;
+    const hiddenNote = hiddenCount
+      ? `<div class="muted" style="margin-top:8px">${esc(t.hidden_system.replace("{count}", hiddenCount))}</div>`
+      : "";
+    const rows = shown
       .map((p) => {
         const role = t.roles[p.role] || p.role;
         const slot = p.slot ? ` ${p.slot} · ${p.active ? t.active : t.inactive}` : "";
@@ -434,6 +444,7 @@ class PartitionMapPanel extends HTMLElement {
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
+      ${hiddenNote}
     </div>`;
   }
 }

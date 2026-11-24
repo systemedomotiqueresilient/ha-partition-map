@@ -28,13 +28,15 @@
           "admin_notify_target": "Téléphone admin",
           "warning_threshold": "Seuil d'avertissement",
           "critical_threshold": "Seuil critique",
-          "include_mounts": "Surveiller les stockages réseau"
+          "include_mounts": "Surveiller les stockages réseau",
+          "detail_level": "Détail du tableau des partitions"
         },
         "data_description": {
           "admin_notify_target": "Service ou entité de notification pour les alertes de stockage. Laisse vide pour ne recevoir que des notifications persistantes.",
           "warning_threshold": "Pourcentage d'occupation qui déclenche un avertissement.",
           "critical_threshold": "Pourcentage d'occupation qui déclenche une alerte critique. Doit être supérieur au seuil d'avertissement.",
-          "include_mounts": "Surveille aussi les partages de sauvegarde et de médias ajoutés dans Paramètres > Système > Stockage."
+          "include_mounts": "Surveille aussi les partages de sauvegarde et de médias ajoutés dans Paramètres > Système > Stockage.",
+          "detail_level": "Simple ne liste que les partitions de données (hassos-data…) sous chaque barre ; les partitions système de HAOS restent visibles dans la barre. Détaillé liste toutes les partitions."
         }
       }
     },
@@ -58,6 +60,14 @@
       },
       "mount_usage": {
         "name": "Occupation du stockage {name}"
+      }
+    }
+  },
+  "selector": {
+    "detail_level": {
+      "options": {
+        "simple": "Simple",
+        "detailed": "Détaillé"
       }
     }
   }

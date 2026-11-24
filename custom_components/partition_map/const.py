@@ -5,7 +5,7 @@ from typing import Final
 
 DOMAIN: Final = "partition_map"
 NAME: Final = "Partition Map"
-VERSION: Final = "0.4.1"
+VERSION: Final = "0.5.0"
 
 # L'occupation est relue souvent, la table des partitions rarement.
 UPDATE_INTERVAL: Final = timedelta(minutes=5)
@@ -24,6 +24,12 @@ CONF_INCLUDE_MOUNTS: Final = "include_mounts"
 DEFAULT_WARNING_THRESHOLD: Final = 85
 DEFAULT_CRITICAL_THRESHOLD: Final = 95
 DEFAULT_INCLUDE_MOUNTS: Final = True
+
+# Niveau de détail du tableau sous chaque barre (la barre reste complète)
+CONF_DETAIL_LEVEL: Final = "detail_level"
+DETAIL_SIMPLE: Final = "simple"
+DETAIL_DETAILED: Final = "detailed"
+DEFAULT_DETAIL_LEVEL: Final = DETAIL_DETAILED
 HYSTERESIS: Final = 2  # points de % sous le seuil pour réarmer une alerte
 
 # Identifiant du stockage de la partition data active

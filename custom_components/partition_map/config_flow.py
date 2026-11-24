@@ -31,11 +31,15 @@ from .admin_phone import (
 )
 from .const import (
     CONF_CRITICAL_THRESHOLD,
+    CONF_DETAIL_LEVEL,
     CONF_INCLUDE_MOUNTS,
     CONF_WARNING_THRESHOLD,
     DEFAULT_CRITICAL_THRESHOLD,
+    DEFAULT_DETAIL_LEVEL,
     DEFAULT_INCLUDE_MOUNTS,
     DEFAULT_WARNING_THRESHOLD,
+    DETAIL_DETAILED,
+    DETAIL_SIMPLE,
     DOMAIN,
     NAME,
 )
@@ -120,6 +124,7 @@ class PartitionMapOptionsFlow(OptionsFlow):
                         CONF_WARNING_THRESHOLD: warning,
                         CONF_CRITICAL_THRESHOLD: critical,
                         CONF_INCLUDE_MOUNTS: bool(user_input[CONF_INCLUDE_MOUNTS]),
+                        CONF_DETAIL_LEVEL: user_input.get(CONF_DETAIL_LEVEL, DEFAULT_DETAIL_LEVEL),
                     }
                 )
 
@@ -144,6 +149,16 @@ class PartitionMapOptionsFlow(OptionsFlow):
                     CONF_INCLUDE_MOUNTS,
                     default=options.get(CONF_INCLUDE_MOUNTS, DEFAULT_INCLUDE_MOUNTS),
                 ): BooleanSelector(),
+                vol.Required(
+                    CONF_DETAIL_LEVEL,
+                    default=options.get(CONF_DETAIL_LEVEL, DEFAULT_DETAIL_LEVEL),
+                ): SelectSelector(
+                    SelectSelectorConfig(
+                        options=[DETAIL_SIMPLE, DETAIL_DETAILED],
+                        mode=SelectSelectorMode.LIST,
+                        translation_key=CONF_DETAIL_LEVEL,
+                    )
+                ),
             }
         )
         return self.async_show_form(step_id="init", data_schema=schema, errors=errors)

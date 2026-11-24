@@ -10,6 +10,7 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
 
+from custom_components.partition_map import layout_payload
 from custom_components.partition_map.const import VERSION
 from custom_components.partition_map.diagnostics import (
     async_get_config_entry_diagnostics,
@@ -58,9 +59,9 @@ async def test_setup_and_entities(hass: HomeAssistant, supervisor, ha_deps) -> N
     assert orphan.attributes["partitions"] == ["/dev/sdb8"]
 
     diag = await async_get_config_entry_diagnostics(hass, entry)
-    assert diag["version"] == "0.4.1"
+    assert diag["version"] == "0.5.0"
     assert diag["admin_phone_module"] == "1.2.0"
-    assert diag["layout"]["version"] == "0.4.1"
+    assert diag["layout"]["version"] == "0.5.0"
     assert diag["layout"]["disks"][0]["serial"] == "**REDACTED**"
     assert diag["layout"]["hostname"] == "haos-test"
 
@@ -70,8 +71,22 @@ async def test_setup_and_entities(hass: HomeAssistant, supervisor, ha_deps) -> N
     await hass.async_block_till_done()
     assert hass.states.get(mount.entity_id).state == "unavailable"
 
+    # Contenu envoyé au panneau : niveau de détail « détaillé » par défaut
+    assert layout_payload(entry, entry.runtime_data)["detail_level"] == "detailed"
+
     assert await hass.config_entries.async_unload(entry.entry_id)
     await hass.async_block_till_done()
+
+
+async def test_simple_detail_level(hass: HomeAssistant, supervisor, ha_deps) -> None:
+    entry = make_entry(options={"detail_level": "simple"})
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    payload = layout_payload(entry, entry.runtime_data)
+    assert payload["detail_level"] == "simple"
+    # Le modèle reste complet : le filtrage se fait à l'affichage
+    assert len(payload["disks"][0]["partitions"]) == 8
 
 
 async def test_migration_from_0_1_0(hass: HomeAssistant, supervisor, ha_deps) -> None:

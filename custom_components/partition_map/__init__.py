@@ -17,6 +17,8 @@ import voluptuous as vol
 from .admin_phone import CONF_ADMIN_NOTIFY_TARGET
 from .alerts import AlertManager
 from .const import (
+    CONF_DETAIL_LEVEL,
+    DEFAULT_DETAIL_LEVEL,
     DOMAIN,
     NAME,
     PANEL_COMPONENT,
@@ -121,4 +123,11 @@ async def ws_layout(
     if coordinator.data is None:
         connection.send_error(msg["id"], "no_data", "Aucune donnée disponible")
         return
-    connection.send_result(msg["id"], coordinator.data.as_dict())
+    connection.send_result(msg["id"], layout_payload(entries[0], coordinator))
+
+
+def layout_payload(entry: ConfigEntry, coordinator: PartitionMapCoordinator) -> dict[str, Any]:
+    """Modèle complet + réglages d'affichage du panneau."""
+    payload = coordinator.data.as_dict()
+    payload[CONF_DETAIL_LEVEL] = entry.options.get(CONF_DETAIL_LEVEL, DEFAULT_DETAIL_LEVEL)
+    return payload

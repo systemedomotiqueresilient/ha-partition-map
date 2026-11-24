@@ -28,13 +28,15 @@
           "admin_notify_target": "Admin phone",
           "warning_threshold": "Warning threshold",
           "critical_threshold": "Critical threshold",
-          "include_mounts": "Watch network storage"
+          "include_mounts": "Watch network storage",
+          "detail_level": "Partition table detail"
         },
         "data_description": {
           "admin_notify_target": "Notification service or notify entity for storage alerts. Leave empty to only get persistent notifications.",
           "warning_threshold": "Usage percentage that triggers a warning.",
           "critical_threshold": "Usage percentage that triggers a critical alert. Must be above the warning threshold.",
-          "include_mounts": "Also watch backup and media shares added under Settings > System > Storage."
+          "include_mounts": "Also watch backup and media shares added under Settings > System > Storage.",
+          "detail_level": "Simple only lists the data partitions (hassos-data…) under each bar; HAOS system partitions stay visible in the bar. Detailed lists every partition."
         }
       }
     },
@@ -58,6 +60,14 @@
       },
       "mount_usage": {
         "name": "Storage usage {name}"
+      }
+    }
+  },
+  "selector": {
+    "detail_level": {
+      "options": {
+        "simple": "Simple",
+        "detailed": "Detailed"
       }
     }
   }
