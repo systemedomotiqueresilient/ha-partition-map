@@ -24,7 +24,7 @@ Elle est en **lecture seule** : aucune action sur les disques. Elle ne se connec
 Endpoints utilisés : `/hardware/info`, `/host/info`, `/host/disks/default/usage`, `/mounts`, `/host/disks/{montage}/usage`.
 
 ## Convention « téléphone admin » (commune à toutes les intégrations SDR)
-- `admin_phone.py` est copié **à l'identique** depuis le dépôt de référence `systemedomotiqueresilient/ha-sdr` (actuellement MODULE_VERSION 1.2.0, SHA-256 vérifié par `tests/test_admin_phone.py`). Ne jamais le modifier ici : toute évolution se fait dans ha-sdr, puis on recopie et on met à jour l'empreinte du test.
+- `admin_phone.py` est copié **à l'identique** depuis le dépôt de référence `systemedomotiqueresilient/ha-sdr` (actuellement MODULE_VERSION 1.3.0, SHA-256 vérifié par `tests/test_admin_phone.py`). Ne jamais le modifier ici : toute évolution se fait dans ha-sdr, puis on recopie et on met à jour l'empreinte du test.
 - Synchronisation entre agents : carnet Evernote « HA Intégrations – Synchro IA » (00 protocole, 01 spec, 02 journal, 10 fiche Partition Map à tenir à jour).
 - Chaque intégration crée **sa propre** entité `sensor`, de catégorie `diagnostic` (HA refuse `config` sur un capteur), avec l'unique_id `<entry_id>_admin_notify_target`.
 - État et attribut `notify_service` : le service choisi, ou `None` (état `unknown`).
@@ -35,6 +35,8 @@ Endpoints utilisés : `/hardware/info`, `/host/info`, `/host/disks/default/usage
 
 ## Règles
 - Aucune dépendance d'exécution (`manifest.json` → `"requirements": []`).
+- Manifest conforme au modèle commun de ha-sdr : `python tools/check_manifest.py custom_components/partition_map/manifest.json VERSION` (copie du vérificateur de ha-sdr, lancé aussi par `tests/test_manifest.py`). `hacs.json` suit `manifest/hacs.template.json` (zip_release : chaque release doit porter `partition_map.zip`, construit par `.github/workflows/release.yaml`).
+- Logs (consigne Bug Beacon) : tout message de niveau WARNING ou plus du logger `custom_components.partition_map` devient une réparation chez l'utilisateur. Les cas normaux ou passagers (Supervisor momentanément indisponible, montage injoignable) restent en DEBUG ; `_LOGGER.exception` est réservé aux vrais bugs.
 - Ne jamais modifier le code de Sentinel ni de Spook.
 - Ne jamais envoyer l'adresse e-mail du compte à un service externe.
 - Textes FR et EN : `strings.json` = anglais, `translations/fr.json` et `translations/en.json` synchronisés.

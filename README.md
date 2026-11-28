@@ -2,7 +2,7 @@
 
 # Partition Map
 
-![Version](https://img.shields.io/badge/version-0.5.0-blue)
+![Version](https://img.shields.io/badge/version-0.6.0-blue)
 
 Vue façon GParted des disques et partitions de Home Assistant OS : partitions orphelines, espace non alloué, slots A/B, sur un seul écran.
 
@@ -42,14 +42,14 @@ Le téléphone admin est la cible de notification de l'administrateur, partagée
 - elle se modifie ensuite par **Paramètres → Appareils et services → Partition Map → Configurer** ;
 - rien n'est jamais écrit dans une autre intégration.
 
-Le module `admin_phone.py` (version 1.2.0) est copié tel quel depuis le dépôt de référence `ha-sdr` ; il ne se modifie jamais dans Partition Map.
+Le module `admin_phone.py` (version 1.3.0) est copié tel quel depuis le dépôt de référence `ha-sdr` ; il ne se modifie jamais dans Partition Map.
 
 Partition Map est **en lecture seule** : aucune action sur les disques.
 
 ## Prérequis
 
 - Home Assistant OS ou Supervised (les données viennent du Supervisor)
-- Home Assistant 2025.3 ou plus récent
+- Home Assistant 2026.2 ou plus récent (l'icône s'affiche à partir de 2026.3)
 
 ## Installation
 

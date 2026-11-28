@@ -117,9 +117,19 @@ class PartitionMapCoordinator(DataUpdateCoordinator[PartitionMapData]):
             or self._layout_at is None
             or now - self._layout_at >= LAYOUT_INTERVAL
         ):
-            await self._async_update_layout()
-            self._layout_at = now
-            self._force_layout = False
+            try:
+                await self._async_update_layout()
+            except UpdateFailed as err:
+                # Supervisor momentanément indisponible (mise à jour, redémarrage) :
+                # on garde la dernière table connue et on réessaiera au prochain
+                # cycle. Seul le tout premier chargement échoue réellement, pour
+                # ne pas transformer un incident passager en erreur (Bug Beacon).
+                if self._disks is None:
+                    raise
+                _LOGGER.debug("Table des partitions non relue, ancienne conservée : %s", err)
+            else:
+                self._layout_at = now
+                self._force_layout = False
 
         data = PartitionMapData(
             disks=self._disks or [],

@@ -2,6 +2,19 @@
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versions selon [SemVer](https://semver.org/lang/fr/).
 
+## [0.6.0] - 2026-11-28
+
+### Modifié
+- Module commun `admin_phone.py` passé en **MODULE_VERSION 1.3.0**, copié tel quel depuis ha-sdr (commit bdbe0ec, SHA-256 `38f74609…8ddf8`, vérifié par un test). Le capteur « Téléphone admin » publie le marqueur `admin_phone_convention: 1` (`admin_sensor_attributes`) : Partition Map est reconnue par les intégrations SDR qui ne la listent pas. Avec une entité notify de l'application mobile, les alertes gardent leur tag et leur icône (envoi par le service du même appareil).
+- **Supervisor momentanément indisponible** (mise à jour, redémarrage) : la dernière table des partitions connue est conservée et relue au cycle suivant, sans erreur dans le journal. Seul le tout premier chargement échoue encore. Évite qu'un incident passager devienne une réparation Bug Beacon.
+- `manifest.json` : catégorie Marketplace `computers_network.monitoring`. Manifest vérifié par le contrôleur commun de ha-sdr (`tools/check_manifest.py`, lancé par les tests).
+- `hacs.json` aligné sur le modèle commun : Home Assistant 2026.2 minimum, installation depuis le zip de la release (`partition_map.zip`).
+- Licence : titulaire `systemedomotiqueresilient`.
+
+### Ajouté
+- Workflow `release.yaml` : construit `partition_map.zip` et le joint à chaque release publiée (vérifie aussi que le tag correspond à la version).
+- Workflow `validate.yaml` (hassfest, HACS, ruff, pytest), absent du dépôt GitHub jusqu'ici.
+
 ## [0.5.0] - 2026-11-24
 
 ### Ajouté

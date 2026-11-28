@@ -13,8 +13,8 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .admin_phone import (
     ADMIN_TARGET_SUFFIX,
-    ATTR_NOTIFY_SERVICE,
     CONF_ADMIN_NOTIFY_TARGET,
+    admin_sensor_attributes,
     normalize_target,
 )
 from .const import DOMAIN, NAME, STORAGE_DATA
@@ -60,7 +60,8 @@ class AdminNotifyTargetSensor(SensorEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        return {ATTR_NOTIFY_SERVICE: self._target}
+        # notify_service + marqueur admin_phone_convention (reconnaissance ouverte 1.3.0)
+        return admin_sensor_attributes(self._target)
 
 
 class StorageUsageSensor(CoordinatorEntity[PartitionMapCoordinator], SensorEntity):

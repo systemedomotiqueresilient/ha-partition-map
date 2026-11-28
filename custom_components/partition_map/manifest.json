@@ -1,6 +1,9 @@
 {
   "domain": "partition_map",
   "name": "Partition Map",
+  "categories": [
+    "computers_network.monitoring"
+  ],
   "codeowners": [
     "@systemedomotiqueresilient"
   ],
@@ -18,5 +21,5 @@
   "issue_tracker": "https://github.com/systemedomotiqueresilient/ha-partition-map/issues",
   "requirements": [],
   "single_config_entry": true,
-  "version": "0.5.0"
+  "version": "0.6.0"
 }

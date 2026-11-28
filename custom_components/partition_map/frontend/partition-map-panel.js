@@ -117,7 +117,7 @@ const UNITS = {
 };
 const UNITS_KEY = "partition_map_units";
 // Doit être égal à la version de l'intégration (manifest.json) : vérifié par les tests.
-const PANEL_VERSION = "0.5.0";
+const PANEL_VERSION = "0.6.0";
 const RELOAD_KEY = "partition_map_reloaded_for";
 // Mode « simple » : rôles masqués dans le tableau (la barre reste complète)
 const SYSTEM_ROLES = new Set(["boot", "kernel", "system", "bootstate", "overlay"]);

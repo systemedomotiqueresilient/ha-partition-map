@@ -27,7 +27,7 @@ def _register_notify(hass: HomeAssistant, *names: str) -> None:
 
 
 def test_module_header() -> None:
-    assert MODULE_VERSION == "1.2.0"
+    assert MODULE_VERSION == "1.3.0"
     assert {
         "sentinel_report",
         "deferred_restart",
@@ -38,11 +38,11 @@ def test_module_header() -> None:
     } == set(SIBLING_PLATFORMS)
 
 
-def test_copy_is_reference_1_2_0() -> None:
-    """admin_phone.py doit être la copie exacte de ha-sdr 1.2.0 (commit 77a8992)."""
+def test_copy_is_reference_1_3_0() -> None:
+    """admin_phone.py doit être la copie exacte de ha-sdr 1.3.0 (commit bdbe0ec)."""
     source = Path(__file__).parents[1] / "custom_components/partition_map/admin_phone.py"
     assert hashlib.sha256(source.read_bytes()).hexdigest() == (
-        "1d720150ff1c709547018236afcb1c555e630c504be0c34b20fe0b79ed80545b"
+        "38f74609b319ceb0c56395ff13454d8bbdc72246b1dc02bcf6ad4babf768ddf8"
     )
 
 
@@ -140,5 +140,7 @@ async def test_sibling_removed_keeps_copied_value(hass: HomeAssistant, superviso
     state = hass.states.get(own)
     assert state.state == "notify.mobile_app_pixel_9"
     assert state.attributes["notify_service"] == "notify.mobile_app_pixel_9"
+    # 1.3.0 : marqueur de convention pour la reconnaissance ouverte
+    assert state.attributes["admin_phone_convention"] == 1
     # Notre propre entité est désormais la seule source trouvée
     assert find_admin_targets(hass) == ["notify.mobile_app_pixel_9"]

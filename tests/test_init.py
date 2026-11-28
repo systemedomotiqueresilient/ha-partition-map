@@ -59,9 +59,9 @@ async def test_setup_and_entities(hass: HomeAssistant, supervisor, ha_deps) -> N
     assert orphan.attributes["partitions"] == ["/dev/sdb8"]
 
     diag = await async_get_config_entry_diagnostics(hass, entry)
-    assert diag["version"] == "0.5.0"
-    assert diag["admin_phone_module"] == "1.2.0"
-    assert diag["layout"]["version"] == "0.5.0"
+    assert diag["version"] == "0.6.0"
+    assert diag["admin_phone_module"] == "1.3.0"
+    assert diag["layout"]["version"] == "0.6.0"
     assert diag["layout"]["disks"][0]["serial"] == "**REDACTED**"
     assert diag["layout"]["hostname"] == "haos-test"
 
@@ -108,6 +108,28 @@ async def test_future_version_refused(hass: HomeAssistant, supervisor, ha_deps) 
     entry.add_to_hass(hass)
     assert not await hass.config_entries.async_setup(entry.entry_id)
     assert entry.state is ConfigEntryState.MIGRATION_ERROR
+
+
+async def test_transient_hardware_failure_keeps_layout(
+    hass: HomeAssistant, supervisor, ha_deps, caplog
+) -> None:
+    """Supervisor indisponible après le démarrage : ancienne table gardée, aucune erreur."""
+    entry = make_entry()
+    entry.add_to_hass(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    coordinator = entry.runtime_data
+
+    supervisor.hardware_ok = False
+    caplog.clear()
+    await coordinator.async_refresh_layout()
+    await hass.async_block_till_done()
+
+    assert coordinator.last_update_success
+    assert len(coordinator.data.disks) == 2
+    assert not [r for r in caplog.records if r.levelname in ("WARNING", "ERROR")]
+    orphan = hass.states.get(_entity(hass, "binary_sensor", f"{entry.entry_id}_orphan_partition"))
+    assert orphan.state == "on"
 
 
 async def test_hardware_failure_retries(hass: HomeAssistant, supervisor, ha_deps) -> None:
